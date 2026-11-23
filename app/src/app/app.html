@@ -1,0 +1,26 @@
+<main class="layout">
+  <header class="header">
+    <div><p class="eyebrow"></p><h1>Gerenciador de tarefas</h1><p>As alterações aparecem em todos os clientes conectados.</p></div>
+    <span class="connection" [class.online]="service.connection() === 'connected'">{{ service.connection() === 'connected' ? 'Conectado' : service.connection() === 'connecting' ? 'Conectando…' : 'Desconectado' }}</span>
+  </header>
+  @if (service.error()) { <div class="error" role="alert">{{ service.error() }}</div> }
+  <section class="panel" aria-labelledby="form-heading">
+    <h2 id="form-heading">{{ editingId() ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
+    <form (ngSubmit)="save()">
+      <label for="title">Título</label><input id="title" name="title" [(ngModel)]="title" maxlength="120" required placeholder="O que precisa ser feito?" />
+      <label for="description">Descrição</label><textarea id="description" name="description" [(ngModel)]="description" rows="3" placeholder="Detalhes da tarefa"></textarea>
+      <label for="status">Status</label><select id="status" name="status" [(ngModel)]="status"><option value="pendente">Pendente</option><option value="em_andamento">Em andamento</option><option value="concluida">Concluída</option></select>
+      <div class="actions"><button type="submit" [disabled]="service.connection() !== 'connected' || !title.trim()">{{ editingId() ? 'Salvar alterações' : 'Adicionar tarefa' }}</button>@if (editingId()) { <button type="button" class="secondary" (click)="cancel()">Cancelar</button> }</div>
+    </form>
+  </section>
+  <section class="tasks" aria-labelledby="tasks-heading">
+    <div class="section-heading"><h2 id="tasks-heading">Tarefas</h2><span>{{ service.tasks().length }} no total</span></div>
+    @if (service.tasks().length === 0) { <p class="empty">Nenhuma tarefa cadastrada ainda.</p> }
+    @for (task of service.tasks(); track task.id) {
+      <article class="task">
+        <div class="task-content"><span class="badge" [class.done]="task.status === 'concluida'">{{ statusLabel(task.status) }}</span><h3>{{ task.title }}</h3>@if (task.description) { <p>{{ task.description }}</p> }</div>
+        <div class="task-actions"><button type="button" class="secondary" (click)="edit(task)">Editar</button><button type="button" class="danger" (click)="remove(task)">Excluir</button></div>
+      </article>
+    }
+  </section>
+</main>

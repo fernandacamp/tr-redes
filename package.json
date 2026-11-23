@@ -1,0 +1,9 @@
+{
+  "name": "tr-redes",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix app",
+    "start": "npm start --prefix app",
+    "build": "npm run build --prefix app"
+  }
+}

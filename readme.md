@@ -1,183 +1,63 @@
-# Gerenciador de Tarefas em Tempo Real com WebSocket
+# Gerenciador de tarefas em tempo real com WebSocket
 
-Projeto desenvolvido para a disciplina de **Redes de Computadores**, com o objetivo de demonstrar a comunicação em tempo real entre clientes e servidor utilizando WebSocket sobre TCP.
+Projeto da disciplina de **Redes de Computadores** que demonstra a comunicação entre um cliente Angular e um servidor WebSocket sobre TCP. Tarefas criadas, editadas ou excluídas em uma janela aparecem nas demais sem recarregar a página.
 
-## 1. Sobre o projeto
+## Estado atual
 
-O projeto consiste em um sistema simples de gerenciamento de tarefas, desenvolvido com Angular no front-end e Node.js no back-end.
+O repositório contém o cliente Angular. Para sincronizar tarefas, ele precisa de um servidor WebSocket compatível com o protocolo descrito em [app/PROTOCOL.md](app/PROTOCOL.md). A análise do tráfego com Wireshark faz parte do objetivo do projeto, mas suas capturas e resultados ainda não estão documentados aqui.
 
-A aplicação permitirá criar, visualizar, editar e excluir tarefas. As alterações serão sincronizadas automaticamente entre todos os clientes conectados ao servidor, sem a necessidade de atualizar a página.
+## Funcionalidades implementadas
 
-Além do desenvolvimento da aplicação, será utilizado o **Wireshark** para capturar e analisar os pacotes transmitidos pela rede, permitindo observar o funcionamento da comunicação WebSocket sobre TCP.
+- Criar tarefas com título, descrição e status (`pendente`, `em_andamento` ou `concluida`).
+- Listar, editar e excluir tarefas, com confirmação antes da exclusão.
+- Sincronizar as alterações entre clientes conectados por WebSocket.
+- Exibir o estado da conexão, tentar reconectar automaticamente e solicitar a lista completa após a reconexão.
+- Mostrar mensagens de erro recebidas do servidor ou geradas por falhas de comunicação.
 
-## 2. Objetivos
+## Tecnologias
 
-### Objetivo geral
+- Angular 20 e TypeScript no cliente.
+- Node.js e npm para instalar e executar o cliente.
+- WebSocket sobre TCP para troca de mensagens em JSON.
+- Wireshark para a etapa de captura e análise de rede.
 
-Desenvolver uma aplicação cliente-servidor que utilize WebSocket para comunicação em tempo real, demonstrando o funcionamento desse protocolo e sua relação com o TCP.
-
-### Objetivos específicos
-
-- Desenvolver uma interface de gerenciamento de tarefas utilizando Angular.
-- Implementar um servidor WebSocket utilizando Node.js.
-- Permitir a criação, edição, exclusão e visualização de tarefas.
-- Sincronizar automaticamente as alterações entre diferentes clientes conectados.
-- Demonstrar a comunicação bidirecional entre cliente e servidor.
-- Capturar e analisar o tráfego de rede utilizando Wireshark.
-- Identificar os pacotes TCP e as mensagens WebSocket durante a execução da aplicação.
-
-## 3. Tecnologias utilizadas
-
-| Tecnologia | Finalidade |
-|---|---|
-| Angular | Desenvolvimento da interface |
-| TypeScript | Linguagem utilizada no front-end |
-| Node.js | Execução do servidor |
-| WebSocket (`ws`) | Comunicação em tempo real |
-| TCP | Protocolo de transporte |
-| Wireshark | Captura e análise dos pacotes |
-| Git e GitHub | Versionamento e colaboração |
-
-## 4. Funcionalidades
-
-O sistema terá as seguintes funcionalidades:
-
-- **Criar tarefas:** adicionar uma tarefa com título, descrição e status.
-- **Visualizar tarefas:** apresentar as tarefas cadastradas.
-- **Editar tarefas:** alterar as informações de uma tarefa existente.
-- **Excluir tarefas:** remover tarefas cadastradas.
-- **Atualização em tempo real:** sincronizar as alterações entre todos os clientes conectados.
-- **Comunicação bidirecional:** permitir o envio e recebimento de mensagens entre clientes e servidor.
-
-## 5. Arquitetura do sistema
-
-A aplicação seguirá uma arquitetura cliente-servidor.
-
-O front-end Angular será responsável pela interface e pela interação com o usuário. O back-end Node.js será responsável por receber, processar e distribuir as alterações das tarefas.
-
-A comunicação será realizada utilizando WebSocket, que mantém uma conexão bidirecional entre o cliente e o servidor.
+## Estrutura do projeto
 
 ```text
-          Cliente A (Angular)
-                  |
-                  | WebSocket
-                  |
-           Servidor Node.js
-                  |
-                  | WebSocket
-                  |
-          Cliente B (Angular)
+tr-redes/
+├── package.json             # Comandos para executar o projeto pela raiz
+├── readme.md
+└── app/
+    ├── src/app/             # Interface e serviço WebSocket do cliente
+    ├── PROTOCOL.md          # Formato das mensagens WebSocket
+    └── package.json         # Dependências e comandos do Angular
 ```
 
-### Exemplo de funcionamento
+## Instalação e execução
 
-1. O Cliente A acessa a aplicação.
-2. O Cliente B acessa a mesma aplicação em outro navegador.
-3. Ambos estabelecem uma conexão WebSocket com o servidor.
-4. O Cliente A cria uma tarefa.
-5. O servidor recebe a mensagem e atualiza os dados.
-6. O servidor envia a alteração aos clientes conectados.
-7. A nova tarefa aparece automaticamente nos dois navegadores.
-
-O mesmo processo será utilizado para edição e exclusão de tarefas.
-
-## 6. Estrutura do projeto
-
-```text
-task-manager-websocket/
-│
-├── frontend/
-│   └── Aplicação Angular
-│
-├── backend/
-│   └── Servidor Node.js e WebSocket
-│
-├── docs/
-│   ├── Relatório do projeto
-│   └── Capturas e análises do Wireshark
-│
-├── .gitignore
-└── README.md
-```
-
-## 7. Instalação e execução
-
-*Esta seção será atualizada após a implementação inicial do projeto.*
-
-### Pré-requisitos
-
-- Node.js e npm
-- Angular CLI
-- Git
-- Wireshark
-
-### Clonar o repositório
+É necessário ter **Node.js e npm** instalados. Na raiz do repositório, execute:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
-cd task-manager-websocket
-```
-
-### Executar o back-end
-
-```bash
-cd backend
 npm install
+```
+
+O comando instala também as dependências de `app/`. Inicie o cliente:
+
+```bash
 npm start
 ```
 
-### Executar o front-end
+Acesse `http://localhost:4200`. Para usar as tarefas e verificar a sincronização em duas janelas, mantenha um servidor WebSocket compatível em execução na porta **3000** do mesmo host da página. Para gerar a versão de produção do cliente, execute `npm run build`.
 
-Em outro terminal:
+## Comunicação e análise de rede
 
-```bash
-cd frontend
-npm install
-ng serve
-```
+O cliente e o servidor trocam mensagens JSON por WebSocket. O cliente solicita a lista ao conectar, envia operações de criação, edição e exclusão, e o servidor transmite as alterações a todos os clientes. Os tipos de mensagem e os campos esperados estão em [app/PROTOCOL.md](app/PROTOCOL.md).
 
-Após iniciar a aplicação, acessar:
+Para observar a comunicação no Wireshark, inicie o servidor e o cliente, capture o tráfego da interface de loopback, abra duas janelas da aplicação e crie, edite e exclua tarefas. Analise o estabelecimento da conexão TCP, o handshake HTTP de atualização para WebSocket e as mensagens transmitidas. A captura da interface de loopback é necessária quando cliente e servidor rodam no mesmo computador.
 
-```text
-http://localhost:4200
-```
+## Integrantes
 
-Os comandos de execução poderão ser ajustados conforme a configuração final do projeto.
-
-## 8. Análise de rede com Wireshark
-
-Uma das principais etapas do projeto será analisar a comunicação entre os clientes e o servidor.
-
-Serão realizados testes para observar:
-
-1. O estabelecimento da conexão TCP.
-2. O handshake HTTP utilizado para iniciar a conexão WebSocket.
-3. A troca de mensagens WebSocket.
-4. A transmissão de alterações realizadas nas tarefas.
-5. O encerramento da conexão.
-
-### Procedimento de teste
-
-1. Iniciar o servidor WebSocket.
-2. Abrir a aplicação em dois navegadores.
-3. Iniciar a captura de pacotes no Wireshark.
-4. Criar, editar e excluir tarefas.
-5. Observar as mensagens transmitidas entre os clientes e o servidor.
-6. Analisar os pacotes capturados e documentar os resultados.
-
-**Observação:** caso a comunicação ocorra apenas em `localhost`, será necessário capturar o tráfego na interface de loopback. Para demonstrar a comunicação entre dispositivos, os clientes também poderão ser executados em máquinas diferentes na mesma rede.
-
-## 9. Resultados esperados
-
-Ao final do desenvolvimento, espera-se obter uma aplicação funcional capaz de sincronizar tarefas em tempo real entre diferentes clientes.
-
-Também se espera demonstrar, por meio das capturas realizadas no Wireshark, como o WebSocket utiliza o TCP para estabelecer uma comunicação persistente e bidirecional.
-
-O projeto permitirá relacionar os conceitos estudados na disciplina de Redes de Computadores com uma aplicação prática.
-
-## 10. Integrantes
-
-- Fernanda ALves Campolin dos Santos
+- Fernanda Alves Campolin dos Santos
 - Victor Novoli
 
 **Disciplina:** Redes de Computadores
